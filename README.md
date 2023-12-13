@@ -5,6 +5,15 @@ This is a sample request generator for demonstrating LaunchDarkly migration assi
 * NodeJS >=v16
 * NewRelic Account
 * LaunchDarkly account
+* Prometheus 
+  
+# To run
+1. copy `.env.example` to `.env`
+2. update the `.env` file with your LaunchDarkly SDK key(server-side) and NewRelic ingest key.
+3. install npm packages by runing `npm install`.
+4. run using command: `npm run migration` or `node poll.js`
+   
+
 
 # Sample Configuration
 ```
