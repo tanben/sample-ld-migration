@@ -1,11 +1,41 @@
 # sample-ld-migration
-This is a sample request generator for demonstrating LaunchDarkly migration assistant with OpenTelemetry
+This is a sample request generator for demonstrating LaunchDarkly migration assistant with manual instrumentation using OpenTelemetry.
+
+Launchdarkly automatically tracks three metrics for migration flags: consistency rate, latency and error rate, to help you track the progress of a migration flag.
+
+This example shows how you can use OpenTelemetry with LaunchDarkly migration flags.
+
+## Launchdarkly Migration Insights (metrics)
+Read [Migration flag metrics](https://docs.launchdarkly.com/home/flag-types/migration-flags/metrics) for details.
+* consistency rate
+* latency rate (p99)
+* error rate
+
+
+## Exported Telemetry data
+#### Metrics
+* migration.read
+* migration.write
+* migration.summary.consistent
+* migration.summary.read
+* migration.summary.write
+
+##### Counters
+* operation - *readNew, readOld, writeNew, writeOld*
+* executionTime - *exec time in milliseconds*
+* stage - *off, dualwrite, shadow, rampdown, complete*. [Read multi-stage migrations](https://docs.launchdarkly.com/guides/flags/migrations#overview) for details
+
 
 # Prerequisites
 * NodeJS >=v16
-* NewRelic Account
 * LaunchDarkly account
+* NewRelic account (optional)
 * Prometheus 
+
+# Resources
+* [OpenTelemetry Metrics SdK](https://www.npmjs.com/package/@opentelemetry/sdk-metrics)
+* [Prometheus Example](https://github.com/open-telemetry/opentelemetry-js/tree/main/experimental/examples/prometheus)
+* [NewRelic Examples](https://github.com/newrelic/newrelic-opentelemetry-examples?tab=readme-ov-file)
   
 # To run
 1. copy `.env.example` to `.env`
@@ -66,6 +96,3 @@ LaunchDarkly Migration Insights dashboard
 
 NewRelic Dashboard
 ![Alt text](./image/nr-dashboard.jpg)
-
-Prometheus Dashboard
-![Alt text](./image/prometheus-dashboard.jpg)
