@@ -25,7 +25,7 @@ const isRandomizeRead = process.env.RANDOMIZE_READ === "true";
 const isRandomizeWrite = process.env.RANDOMIZE_WRITE === "true";
 const flagKey = process.env.LD_FLAG_KEY;
 const interval = process.env.POLL_INTERVAL;
-// const interval = 2500;
+
 
 function RandomBetween(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -35,42 +35,27 @@ const options = {
   readNew: async (payload) => {
     return new Promise((resolve, reject) => {
       return setTimeout(
-        async (start) => {
-          const operation = "readNew";
+        async (startTime) => {
           const now = Date.now();
-          const executionTime = now - start;
 
-          const value =
-            isRandomizeRead && Math.round(Math.random()) == 1
-              ? "hello"
-              : "goodbye";
-
-          const { value: stage, tracker } = await ldClient.migrationVariation(
+          const { value: stage } = await ldClient.migrationVariation(
             flagKey,
             context,
             LD.LDMigrationStage.Off
           );
-
-          otelMigrationRead.add(1, { operation, executionTime, stage });
-
-          console.log(
-            `${now}: Stage[${stage}] Operation[${operation}] user[${payload.user.name}]`
-          );
-
-          const status = isRandomizeRead
-            ? Math.round(Math.random()) == 1
-            : true;
-          const params = {
-            success: status,
-            value,
-            executionTime,
-            operation,
+          const ret = await sampleOperation({
+            startTime,
+            currTime: now,
             stage,
-          };
-          if (status) {
-            resolve(LD.LDMigrationSuccess(params));
+            operation: "readNew",
+            isRandomize: isRandomizeRead,
+            otelFn: otelMigrationRead,
+            payload
+          })
+          if (ret.success) {
+            resolve(LD.LDMigrationSuccess(ret));
           } else {
-            reject(LD.LDMigrationError(params));
+            reject(LD.LDMigrationError(ret));
           }
         },
         RandomBetween(1, 50),
@@ -81,38 +66,27 @@ const options = {
   readOld: async (payload) => {
     return new Promise((resolve, reject) => {
       return setTimeout(
-        async (start) => {
-          const operation = "readOld";
+        async (startTime) => {
           const now = Date.now();
-          const executionTime = now - start;
-          const value =
-            isRandomizeRead && Math.round(Math.random()) == 1
-              ? "hello"
-              : "goodbye";
 
-          const { value: stage, tracker } = await ldClient.migrationVariation(
+          const { value: stage } = await ldClient.migrationVariation(
             flagKey,
             context,
             LD.LDMigrationStage.Off
           );
-          otelMigrationRead.add(1, { operation, executionTime, stage });
-          console.log(
-            `${now}: Stage[${stage}] Operation[${operation}] user[${payload.user.name}]`
-          );
-          const status = isRandomizeRead
-            ? Math.round(Math.random()) == 1
-            : true;
-          const params = {
-            success: status,
-            value,
-            executionTime,
-            operation,
+          const ret = await sampleOperation({
+            startTime,
+            currTime: now,
             stage,
-          };
-          if (status) {
-            resolve(LD.LDMigrationSuccess(params));
+            operation: "readOld",
+            isRandomize: isRandomizeRead,
+            otelFn: otelMigrationRead,
+            payload
+          })
+          if (ret.success) {
+            resolve(LD.LDMigrationSuccess(ret));
           } else {
-            reject(LD.LDMigrationError(params));
+            reject(LD.LDMigrationError(ret));
           }
         },
         RandomBetween(50, 100),
@@ -123,38 +97,28 @@ const options = {
   writeNew: async (payload) => {
     return new Promise((resolve, reject) => {
       return setTimeout(
-        async (start) => {
-          const operation = "writeNew";
+        async (startTime) => {
           const now = Date.now();
-          const executionTime = now - start;
-          const value =
-            isRandomizeWrite && Math.round(Math.random()) == 1
-              ? "hello"
-              : "goodbye";
 
-          const { value: stage, tracker } = await ldClient.migrationVariation(
+          const { value: stage } = await ldClient.migrationVariation(
             flagKey,
             context,
             LD.LDMigrationStage.Off
           );
-          otelMigrationWrite.add(1, { operation, executionTime, stage });
-          console.log(
-            `${now}: Stage[${stage}] Operation[${operation}] user[${payload.user.name}]`
-          );
-          const status = isRandomizeWrite
-            ? Math.round(Math.random()) == 1
-            : true;
-          const params = {
-            success: status,
-            value,
-            executionTime,
-            operation,
+          const ret = await sampleOperation({
+            startTime,
+            currTime: now,
             stage,
-          };
-          if (status) {
-            resolve(LD.LDMigrationSuccess(params));
+            operation: "writeNew",
+            isRandomize: isRandomizeWrite,
+            otelFn: otelMigrationWrite,
+            payload
+          })
+
+          if (ret.success) {
+            resolve(LD.LDMigrationSuccess(ret));
           } else {
-            reject(LD.LDMigrationError(params));
+            reject(LD.LDMigrationError(ret));
           }
         },
         RandomBetween(1, 50),
@@ -165,38 +129,28 @@ const options = {
   writeOld: async (payload) => {
     return new Promise((resolve, reject) => {
       return setTimeout(
-        async (start) => {
-          const operation = "writeOld";
+        async (startTime) => {
           const now = Date.now();
-          const executionTime = now - start;
-          const value =
-            isRandomizeWrite && Math.round(Math.random()) == 1
-              ? "hello"
-              : "goodbye";
 
-          const { value: stage, tracker } = await ldClient.migrationVariation(
+          const { value: stage } = await ldClient.migrationVariation(
             flagKey,
             context,
             LD.LDMigrationStage.Off
           );
-          otelMigrationWrite.add(1, { operation, executionTime, stage });
-          console.log(
-            `${now}: Stage[${stage}] Operation[${operation}] user[${payload.user.name}]`
-          );
-          const status = isRandomizeWrite
-            ? Math.round(Math.random()) == 1
-            : true;
-          const params = {
-            success: status,
-            value,
-            executionTime,
-            operation,
+          const ret = await sampleOperation({
+            startTime,
+            currTime: now,
             stage,
-          };
-          if (status) {
-            resolve(LD.LDMigrationSuccess(params));
+            operation: "writeOld",
+            isRandomize: isRandomizeWrite,
+            otelFn: otelMigrationWrite,
+            payload
+          })
+
+          if (ret.success) {
+            resolve(LD.LDMigrationSuccess(ret));
           } else {
-            reject(LD.LDMigrationError(params));
+            reject(LD.LDMigrationError(ret));
           }
         },
         RandomBetween(50, 100),
@@ -215,8 +169,7 @@ const options = {
     const { executionTime: newTime, value: newValue } = newVal;
     const timeDiff = oldTime - newTime;
     console.log(
-      `${now}: => Check: Read consistency  Timediff= ${timeDiff} oldVal=${oldValue} newVal=${newValue} Status[${
-        oldValue === newValue ? "Pass" : "Fail"
+      `${now}: => Check: Read consistency  Timediff= ${timeDiff} oldVal=${oldValue} newVal=${newValue} Status[${oldValue === newValue ? "Pass" : "Fail"
       }]`
     );
 
@@ -233,6 +186,29 @@ const options = {
   latencyTracking: true,
   errorTracking: true,
 };
+
+async function sampleOperation({ startTime, currTime, stage, operation, isRandomize, otelFn, payload }) {
+  const executionTime = currTime - startTime;
+  const isEnabled = isRandomize && Math.round(Math.random()) == 1;
+
+  const status = isRandomize? isEnabled: true;
+  const value = status? "hello": "goodbye";
+  otelFn.add(1, { operation, executionTime, stage });
+
+  console.log(
+    `${currTime}: Stage[${stage}] Operation[${operation}] user[${payload.user.name}] isRandomize=${isRandomize} status=${status}`
+  );
+
+
+  const params = {
+    success: status,
+    value,
+    executionTime,
+    operation,
+    stage,
+  };
+  return params;
+}
 
 async function poll({ context, migration, flagKey }) {
   const defaultStage = LD.LDMigrationStage.Off;

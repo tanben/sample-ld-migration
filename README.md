@@ -1,5 +1,5 @@
 # sample-ld-migration
-This is a sample request generator for demonstrating LaunchDarkly migration assistant with manual instrumentation using OpenTelemetry.
+This is a request generator for demonstrating LaunchDarkly migration assistant with manual instrumentation using OpenTelemetry.
 
 Launchdarkly automatically tracks three metrics for migration flags: consistency rate, latency and error rate, to help you track the progress of a migration flag.
 
